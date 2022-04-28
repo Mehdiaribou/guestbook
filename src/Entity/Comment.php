@@ -124,4 +124,9 @@ class Comment
 
         return $this;
     }
+
+    public function toString(): string
+    {
+        return (string) $this->getEmail();
+    }
 }

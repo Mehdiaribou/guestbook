@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block title %}Conference Guestbook -
-    {{ conference.toString }}
+    {{ conference }}
 {% endblock %}
 
 {% block body %}
-    <h2>{{ conference.toString }}
+    <h2>{{ conference }}
         Conference</h2>
     {% if comments|length > 0 %}
         {% for comment in comments %}
@@ -20,4 +20,6 @@
     {% else %}
         <div>No comments have been posted yet for this conference.</div>
     {% endif %}
+    <h2>Add your own feedback</h2>
+    {{ form(comment_form) }}
 {% endblock %}

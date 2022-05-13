@@ -8,8 +8,8 @@
 
     <h2>Give your feedback!</h2>
     {% for conference in conferences %}
-        <h4>{{ conference.toString }} <span>
-            <a href="{{ path('conference', { id: conference.id }) }}">View</a>
+        <h4>{{ conference }} <span>
+            <a href="{{ path('conference', { slug: conference.slug }) }}">View</a>
         </span>
         </h4>
         

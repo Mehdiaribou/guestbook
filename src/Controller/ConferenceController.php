@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response; 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException; 
 
 class ConferenceController extends AbstractController
 {
@@ -38,7 +39,10 @@ class ConferenceController extends AbstractController
     /**
     * @Route("/conference/{slug}", name="conference")
     */
-    public function show(Request $request, Conference $conference, CommentRepository $commentRepository)
+    public function show(Request $request, 
+    Conference $conference,
+    CommentRepository $commentRepository,
+    string $photoDir)
     {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -46,6 +50,18 @@ class ConferenceController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $comment->setConference($conference);
+            
+            if ($photo = $form['photo']->getData()) {
+                $filename = bin2hex(random_bytes(6)).'.'.$photo->guessExtension();
+            try {
+                $photo->move($photoDir, $filename);
+            } catch (FileException $e) {
+                // unable to upload the photo, give up
+            }
+                $comment->setPhotoFilename($filename);
+            }
+
+
             $this->em->persist($comment);
             $this->em->flush();
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]); 
